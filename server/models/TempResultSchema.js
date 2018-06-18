@@ -2,9 +2,7 @@ var  mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var TempResultSchema = new Schema({
-    SuiteName:{
-        type : String
-    },
+    
     TestPlanName :{
         type : String
     },
@@ -13,7 +11,9 @@ var TempResultSchema = new Schema({
             type : String
         },        
         Results :[{
-            
+            BuildCombination :{
+                type : String
+            },
             BuildNumber:{
                 type : String
             },
@@ -59,7 +59,10 @@ var TempResultSchema = new Schema({
                     type : String
                     }
                 ]
-            }]
+            }],            
+            AdditionalInfo:{
+                type: String
+            }
             
         }],
     }],    

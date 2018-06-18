@@ -37,7 +37,7 @@ getPanel(){
    // const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={this.toggle}>&times;</button>;
 
 
-   const info = (this.props.obj.remarks) ? <ListGroupItem>
+   const info = (this.props.obj && this.props.obj.remarks) ? <ListGroupItem>
    <ListGroupItemHeading>
      Additional Information
      </ListGroupItemHeading>
@@ -45,7 +45,7 @@ getPanel(){
    </ListGroupItem>
   : <div/>;
 
-  const bugDetail = (this.props.obj.bugDetail) ? <ListGroupItem>
+  const bugDetail = (this.props.obj && this.props.obj.bugDetail) ? <ListGroupItem>
    <ListGroupItemHeading>
      Bug Details
      </ListGroupItemHeading>
@@ -53,7 +53,7 @@ getPanel(){
    </ListGroupItem>
   : <div/>;
 
-  const bugFailure = (this.props.obj.totalBugFailure) ? <ListGroupItem>
+  const bugFailure = (this.props.obj &&  this.props.obj.totalBugFailure) ? <ListGroupItem>
    <ListGroupItemHeading>
      Testcases failed due to Bug
      </ListGroupItemHeading>
@@ -62,24 +62,31 @@ getPanel(){
   : <div/>;
     return (
       <div>
-        <Button className="btn btn-primary"  onClick={this.toggle}> View </Button>
+        <Button className="btn-info"  onClick={this.toggle}> View </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} size = "lg" >
           <ModalHeader toggle={this.toggle}>{this.props.obj.testPlanName}</ModalHeader>
           <ModalBody>
             
             <ListGroup>
-              {info}
+             
               <ListGroupItem>
                 <ListGroupItemHeading>
                   Suite Name
                   </ListGroupItemHeading>
                   {this.props.obj.testPlanName}
                 </ListGroupItem>
+                {info}
                 <ListGroupItem>
                 <ListGroupItemHeading>
                   Build Number
                   </ListGroupItemHeading>
                   {this.props.obj.release}.{this.props.obj.buildNumber}
+                </ListGroupItem>
+                <ListGroupItem>
+                <ListGroupItemHeading>
+                  Product Build Number
+                  </ListGroupItemHeading>
+                  {this.props.obj.buildCombination}
                 </ListGroupItem>
                 <ListGroupItem>
                 <ListGroupItemHeading>

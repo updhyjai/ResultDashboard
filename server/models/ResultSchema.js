@@ -2,77 +2,83 @@ var  mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ResultSchema = new Schema({
-    testPlanName :{
+    TestPlanName :{
         type : String
     },
-    details:[{
-        release :{
+    Details:[{
+        Release :{
             type : String
         },        
-        results :[{
-            buildNumber:{
+        Results :[{
+            BuildCombination :{
+                type : String
+            },
+            BuildNumber:{
                 type : String
             },
         
-            suiteStatus:{
+            SuiteStatus:{
                 type : String,
                 default : 'Fail'
             },
-            totalTestcase:{
+            TotalTestcase:{
                 type : Number
             },
-            totalTestcaseExecuted:{
+            TotalTestcaseExecuted:{
                 type : Number
             },
-            totalPass:{
+            TotalPass:{
                 type : Number
             },
-            totalFail:{
+            TotalFail:{
                 type : Number
             },
-            totalBugFailure:{
+            TotalBugFailure:{
                 type: Number,
                 default:0
             },
-            executionDate:{
+            ExecutionDate:{
                 type : String
             },
-            bugDetail:{
+            BugDetail:{
                 type : String
             },
-            failedTestCase:[{
-                testCaseName :{
+            FailedTestCase:[{
+                TestCaseName :{
                     type: String
                 },
-                validationPointResults : [{
+                ValidationPointResults : [{
                     type : String
                     }],
-                failureReason: {
+                FailureReason: {
                         type: String
                     }
 
             }],
-            passedTestCase:[{
-                testCaseName :{
+            PassedTestCase:[{
+                TestCaseName :{
                     type: String
                 },
-                validationPointResults : [{
+                ValidationPointResults : [{
                     type : String
                 }],
-                failureReason: {
+                FailureReason: {
                     type: String
                 }
             }],
-            remarks:{
+            Remarks:{
+                type: String
+            },
+            AdditionalInfo:{
                 type: String
             }
         }],
     }],    
-    isCiSuite:{
+    IsCiSuite:{
         type : Boolean,
         default : false
     },
-    teamName:{
+    TeamName:{
         type : String,
         default : 'General'
     }

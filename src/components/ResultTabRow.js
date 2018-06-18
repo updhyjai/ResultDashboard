@@ -19,9 +19,7 @@ class ResultTabRow extends Component {
           <td>
             {this.props.obj.suiteStatus}
           </td>
-          <td>
-            {this.props.obj.totalTestcase}
-          </td>
+         
           <td>
             {this.props.obj.totalTestcaseExecuted}
           </td>

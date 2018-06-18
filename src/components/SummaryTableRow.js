@@ -17,9 +17,7 @@ class SummaryTableRow extends Component {
           <td>
             {this.props.obj.suiteStatus}
           </td>
-          <td>
-            {this.props.obj.totalTestcase}
-          </td>
+          
           <td>
             {this.props.obj.totalTestcaseExecuted}
           </td>
@@ -30,7 +28,7 @@ class SummaryTableRow extends Component {
             {this.props.obj.totalFail}
           </td>
           <td>
-            {this.props.obj.totalBugFailure}
+            {this.props.obj.bugFailure}
           </td>
           <td>
             {this.props.obj.executionDate}

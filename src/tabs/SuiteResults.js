@@ -61,7 +61,9 @@ export default class Home extends Component {
                         datas[i].totalFail = kInput.TotalFail;
                         datas[i].executionDate = kInput.ExecutionDate;
                         datas[i].bugDetail = kInput.BugDetail;
-                        datas[i].failedTestCase = kInput.PassedTestCase;
+                        datas[i].failedTestCase = kInput.FailedTestCase;
+                        datas[i].passedTestCase = kInput.PassedTestCase;
+                        datas[i].buildCombination = kInput.BuildCombination;
                         console.log(kInput.PassedTestCase);
                         tFail += kInput.TotalFail;
                         tPass += kInput.TotalPass;

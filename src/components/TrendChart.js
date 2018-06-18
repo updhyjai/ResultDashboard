@@ -34,22 +34,22 @@ class TrendChart extends Component{
         <LabelList dataKey="Name" position="center" angle={-90}  fill = "#4d5d8e" />
         </Bar>
         </BarChart>*/
-        <div className="justify-content-md-center">
-        <LineChart width={1200} height={450} data={this.props.data} syncId="anyId"
-                margin={{top: 10, right: 30, left: 0, bottom: 10}}>
+        <div className="d-flex justify-content-center text-light shadow-lg">
+        <LineChart   width={1400} height={450} data={this.props.data} syncId="anyId"
+                margin={{top: 10, right: 0, left: 0, bottom: 10}}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="Build" width = {5} ></XAxis>
-            <YAxis label={{ value: '# of Test-cases', angle: -90, position: 'insideLeft' }}/>
+            <XAxis dataKey="Build" width = {5} tick={{ fill: '#ffffff' }} ></XAxis>
+            <YAxis scale = 'linear' tick={{ fill: '#ffffff' }} label={{fill:'#ffffff', value: 'Test-cases', angle: -90, position: 'insideLeft' }}/>
             <Tooltip/>
-            <Line type='monotone' dataKey='Pass' stroke='#8884d8' fill='#8884d8' strokeWidth ={2}/>
-            <Line type='monotone' dataKey='Fail' stroke='red' fill='red' strokeWidth ={2}></Line>
+            <Line type='monotone' dataKey='Pass' stroke='#17a2b8' fill='#17a2b8' strokeWidth ={3}/>
+            <Line type='monotone' dataKey='Fail' stroke='#ff3a3a' fill='red' strokeWidth ={3}></Line>
             <Brush height={20}  margin= {10}/>
             <Legend verticalAlign="top" height={16}/>
             
         </LineChart>
-        
-      
         </div>
+      
+    
     );
     }
 }

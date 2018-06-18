@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 //import axios from 'axios';
+import {Table} from 'reactstrap';
 import SummaryTableRow from './SummaryTableRow';
 import axios from 'axios';
 export default class SummaryTable extends Component {
@@ -35,15 +36,15 @@ export default class SummaryTable extends Component {
 
     render() {
       return (
-        <div className="table-responsive"  style={{marginTop: 20}}>
-            <table className="table table-sm ">
-              <thead className="thead-dark">
+        <div className="table-responsive "  style={{marginTop: 20}}>
+            <Table hover dark className = "shadow-lg">
+              <thead>
                 <tr>
                   <th>Suite Name</th>
                   <th>Release</th>
                   <th>Build Number</th>
                   <th>Status</th>
-                  <th>Total Test-case</th>
+                  
                   <th>Total Test-case Executed</th>
                   <th>Total Pass</th>
                   <th>Total Fail</th>
@@ -56,7 +57,7 @@ export default class SummaryTable extends Component {
               <tbody>
                 {this.tabRow()}
               </tbody>
-            </table>
+            </Table>
         </div>
       );
     }

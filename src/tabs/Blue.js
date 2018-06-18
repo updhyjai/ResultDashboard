@@ -4,148 +4,253 @@ import TrendChart from '../components/TrendChart';
 import chartData from '../models/data.json';
 import SummaryTable from '../components/SummaryTable';
 import Dropdown from '../components/Dropdown';
+import UnverifiedResultTable from '../components/ResultTable';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
+import classnames from 'classnames';
+import { validateWidthHeight } from 'Recharts/lib/util/ReactUtils';
 
-export default class Aqua extends Component {
+export default class Blue extends Component {
     constructor(props){
         super(props);
         this.state={
             releaseSummary:[],
-            trendChartData :[]
+            trendChartData :[],
+            activeTab: '1',
+            releaseSummaryUnverified:[]
         };
 
+        this.getReleaseSummary = this.getReleaseSummary.bind(this);
+        this.getUnverifiedSummary = this.getUnverifiedSummary.bind(this);
+        this.getTrendChartDataFromDB = this.getTrendChartDataFromDB.bind(this);
+        this.toggle = this.toggle.bind(this);
+    
     }
-    componentDidMount(){
-        axios.get('http://10.4.1.89:4200/result/ci/blue')
+
+    toggle(tab){
+        if (this.state.activeTab !== tab) {
+            this.setState({activeTab: tab});
+        }
+    }
+
+
+    getTrendChartDataFromDB(val){
+        axios.get('http://10.4.1.89:4200/result/ci/release/'+val+'/blue/')
         .then(response=>{
+            console.log("Response data for trend chart from masterDB below from Blue with release"+val);
             console.log(response.data);
-            var count = response.data.length;
+            let count = response.data.length;
             if(count>0)
             {
                 let array = response.data;
                 let trendData = [];
+                let z =0;
                 for (let i = 0; i < array.length; i++) {
                     let iArray = array[i];
-                    for (let j = 0; j < iArray.details.length; j++) {
-                        let jArray = iArray.details[j];
-                        for (let k = 0; k < jArray.results.length; k++) {
-                            let kArray = jArray.results[k];
-                            trendData[i] = {};
-                            trendData[i].Build = jArray.release + '.' + kArray.buildNumber;
-                            trendData[i].Fail = kArray.totalFail;
-                            trendData[i].Pass = kArray.totalPass;
-                            trendData[i].Total = kArray.totalTestcaseExecuted;
-                            trendData[i].Date = kArray.executionDate;
+                    for (let j = 0; j < iArray.Details.length; j++) {
+                        let jArray = iArray.Details[j];
+                        for (let k = 0; k < jArray.Results.length; k++) {
+                            let kArray = jArray.Results[k];
+                            if(jArray.Release !== val)
+                            continue;
+                            trendData[z] = {};
+                            trendData[z].Build = jArray.Release + '.' + kArray.BuildNumber;
+                            trendData[z].Fail = kArray.TotalFail;
+                            trendData[z].Pass = kArray.TotalPass;
+                            trendData[z].Total = kArray.TotalTestcaseExecuted;
+                            trendData[z].Date = kArray.ExecutionDate;
+                            z++;
                         }
-                        
                     }
-                    
-                    
                 }    
-                //console.log(trendData);
                 this.setState({trendChartData:trendData});
-                console.log(this.state.trendChartData);
             }
-            
         })
         .catch(function(error){
             console.log(error);
-        }
-        )
+        })
     }
-    
-    onReleaseChange = (val)=> {
-        console.log(val);
-     
-        this.getReleaseSummary(val);
+
+    componentDidMount(){
         
-   }
-
-   getReleaseSummary = (val)=>{
-    axios.get('http://10.4.1.89:4200/result/release/'+ val + '/blue') 
-    .then(response => {
-      console.log("In table get" + val);
-      console.log(response.data);
-      var datas = new Array(response.data.length);
-      //var chartData = new Array(response.length);
-      var input = response.data;
-    
-      var tFail =0,tPass=0,tTc = 0,tETc =0;
-      if(input.length > 0){
-      //console.log(input[1].details[0].results[0].buildNumber);
-      
-      for(var i=0;i<input.length;i++){
-          datas[i] = [];
-        var iInput = input[i];  
-        for(var j=0;j<iInput.details.length;j++){
-              var jInput = iInput.details[j];
-             
-              
-                for(var k = 0;k<jInput.results.length;k++){
-                    var kInput = jInput.results[k];
-                    console.log(jInput.release);
-                    if(jInput.release != val)
-                        continue;
-                    datas[i].suiteName = iInput.suiteName;
-                    datas[i].release = jInput.release;
-
-                    datas[i].buildNumber = kInput.buildNumber;
-                    datas[i].suiteStatus = kInput.suiteStatus;
-                    datas[i].totalTestcase = kInput.totalTestcase;
-                    datas[i].totalTestcaseExecuted = kInput.totalTestcaseExecuted;
-                    datas[i].totalPass = kInput.totalPass;
-                    datas[i].totalFail = kInput.totalFail;
-                    datas[i].executionDate = kInput.executionDate;
-                    datas[i].bugDetail = kInput.bugDetail;
-                    tFail += kInput.totalFail;
-                    tPass += kInput.totalPass;
-                    tTc  += kInput.totalTestcase;
-                    tETc += kInput.totalTestcaseExecuted;
-                }
-          }
-      }
     }
     
-      this.setState({releaseSummary:datas,totalFail:tFail,totalPass:tPass,totalTestcase:tTc,totalTestcaseExecuted:tETc})
-    
-     // this.setState(() =>({releaseSummary:response.data}),()=>{console.log(this.state.releaseSummary);});
-      //this.tabRow(response.data);
-      
-      
+    onReleaseChange = (val)=> {        
+        console.log(val);
+        this.getTrendChartDataFromDB(val);
+        this.getReleaseSummary(val);
+        this.getUnverifiedSummary(val);
+        
+    }
 
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
+    getReleaseSummary = (val)=>{
+        axios.get('http://10.4.1.89:4200/result/release/'+ val + '/blue')
+        .then(response => {
+        console.log("Response data for summary table from masterDB below from Blue with release "+ val);
+        console.log(response.data);
+        var datas = new Array(response.data.length);
+        //var chartData = new Array(response.length);
+        var input = response.data;
+        var tFail =0,tPass=0,tTc = 0,tETc =0;
+        if(input.length > 0){
+            let z = 0;
+        for(var i=0;i<input.length;i++){
+            datas[i+z] = [];
+            var iInput = input[i]; 
+            
+                for(let j=0;j<iInput.Details.length;j++){
+                    let jInput = iInput.Details[j];
+                    if(jInput.Release != val)
+                            continue;
+                            for(let k = 0;k<jInput.Results.length;k++){
+                            let kInput = jInput.Results[k];
+                            z = k;
+                            datas[i+z] = [];
+                            datas[i+z].testPlanName = iInput.TestPlanName;
+                            datas[i+z].release = jInput.Release;
+                            datas[i+z].totalBugFailure = kInput.TotalBugFailure;
+                            datas[i+z].buildNumber = kInput.BuildNumber;
+                            datas[i+z].suiteStatus = kInput.SuiteStatus;
+                            datas[i+z].totalTestcase = kInput.TotalTestcase;
+                            datas[i+z].totalTestcaseExecuted = kInput.TotalTestcaseExecuted;
+                            datas[i+z].totalPass = kInput.TotalPass;
+                            datas[i+z].totalFail = kInput.TotalFail;
+                            datas[i+z].executionDate = kInput.ExecutionDate;
+                            datas[i+z].bugDetail = kInput.BugDetail;
+                            datas[i+z].failedTestCase = kInput.FailedTestCase;
+                            datas[i+z].remarks = kInput.Remarks;
+                            datas[i+z].buildCombination = kInput.BuildCombination;
+                            tFail += kInput.TotalFail;
+                            tPass += kInput.TotalPass;
+                            tTc  += kInput.TotalTestcase;
+                            tETc += kInput.TotalTestcaseExecuted;
+                            }
+                        }
+                
+                
+                }
+            }
+            this.setState({releaseSummary:datas,totalFail:tFail,totalPass:tPass,totalTestcase:tTc,totalTestcaseExecuted:tETc})
+        })
+        .catch(function (error) {
+        console.log(error);
+        })
+    }
 
-   
-   }
+    getUnverifiedSummary = (val)=>{
+        axios.get('http://10.4.1.89:4200/result/tempresults/ci/release/'+ val + '/blue')
+        .then(response => {
+            console.log("Response data from tempdb ci below with version: " + val);
+            console.log(response.data);
+            var datas = new Array(response.data.length);
+            var input = response.data;
+            var tFail =0,tPass=0,tTc = 0,tETc =0;
+            if(input.length > 0){
+                for(var i=0;i<input.length;i++){
+                    datas[i] = [];
+                    var iInput = input[i];  
+                    console.log(iInput.TestPlanName);
+                    datas[i]._id = iInput._id;
+                    datas[i].testPlanName = iInput.TestPlanName;
+                    for(var j=0;j<iInput.Details.length;j++){
+                        var jInput = iInput.Details[j];
+                        datas[i].release = jInput.Release;
+                        for(var k = 0;k<jInput.Results.length;k++){
+                            var kInput = jInput.Results[k];
+                            datas[i].buildNumber = kInput.BuildNumber;
+                            datas[i].suiteStatus = kInput.SuiiteStatus;
+                            datas[i].totalTestcase = kInput.TotalTestcase;
+                            datas[i].totalTestcaseExecuted = kInput.TotalTestcaseExecuted;
+                            datas[i].totalPass = kInput.TotalPass;
+                            datas[i].totalFail = kInput.TotalFail;
+                            datas[i].executionDate = kInput.ExecutionDate;
+                            datas[i].bugDetail = kInput.BugDetail;
+                            datas[i].failedTestCase = kInput.FailedTestCase;
+                            datas[i].passedTestCase = kInput.PassedTestCase;
+                            datas[i].buildCombination = kInput.BuildCombination;
+                            tFail += kInput.TotalFail;
+                            tPass += kInput.TotalPass;
+                            tTc  += kInput.TotalTestcase;
+                            tETc += kInput.TotalTestcaseExecuted;
+                        }
+                    }
+                }
+            }
+            this.setState({releaseSummaryUnverified:datas})
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
 
     render() {
+        const trendChart = (this.state.trendChartData.length>0)?(<TrendChart data ={this.state.trendChartData}/>) :<div />;
+        const unverifiedResultTable = (this.state.releaseSummaryUnverified.length > 0 ) ?(<div style={{marginTop: 50}}><div style={{marginTop: 20}}> <UnverifiedResultTable releaseSummary = {this.state.releaseSummaryUnverified}/></div></div>):(<div><h1>No new results now!</h1></div>);
         const summaryTable = (this.state.releaseSummary.length > 0 ) ?(<div style={{marginTop: 50}}><div style={{marginTop: 20}}> <SummaryTable releaseSummary = {this.state.releaseSummary}/></div></div>):(<div></div>);
         const pieChart =(this.state.totalPass !== 0)? <TrendChart/>:<div></div>;
         
         return (
             <div>
              <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom" style={{margin:20}}>
-            <h1 className="h2" >Blue CI Trend Chart</h1>
-            
-          </div>
-                <div style={{marginLeft:60,marginBottom:50}}>
-                    <TrendChart data ={this.state.trendChartData}/>
-                 </div>
-                 
-                 <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-top">
-            <h1 className="h2" style={{marginTop: 50}}>Blue Execution Result Summary</h1>
+            <h2 className="h2" >Blue CI Trend Chart</h2>
             <div className="form-control-lg mb-4 mb-md-0">
-            <h6>Change Build Release here</h6>
+            <h3>Release</h3>
               <Dropdown onReleaseChange = {this.onReleaseChange} />
             
           </div>
+            
           </div>
+                
+                <Row>
+              <Col sm="12">
+              {trendChart}
+              </Col>
+            </Row>
                   
+                
+                 
+                 <div style={{marginTop: 50}} className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 className="h2" >Blue Execution Result Summary</h1>
+           
+          </div>
+          <div>
+        <Nav tabs className="shadow">
+        <NavItem className="summaryTab">
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '1' })}
+              onClick={() => { this.toggle('1'); }}
+            >
+              Verified Results
+            </NavLink>
+          </NavItem>
+          <NavItem className="summaryTab">
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('2'); }}
+            >
+              Unverified Results
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+            <Row>
+              <Col sm="12">
+              {summaryTable}
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="2">
+            <Row>
+              <Col sm="12">
+              {unverifiedResultTable}
+              </Col>
+            </Row>
+          </TabPane>
+        </TabContent>
+      </div>
             
             
-                {summaryTable}
+                
              
             
             </div>

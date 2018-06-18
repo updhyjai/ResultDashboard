@@ -60,3 +60,8 @@
   border-radius: 18px;
   border: 1px solid #cfcece;
 }
+
+
+.navbar .navbar-nav>li>a, .navbar .navbar-nav>li>a:hover {
+  color: #fff;
+}

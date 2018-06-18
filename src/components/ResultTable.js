@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //import axios from 'axios';
 import ResultTableROw from './ResultTabRow';
 import axios from 'axios';
+import {Table} from 'reactstrap';
 export default class ResultTable extends Component {
 
   constructor(props) {
@@ -36,14 +37,14 @@ export default class ResultTable extends Component {
     render() {
       return (
         <div className="table-responsive"  style={{marginTop: 20}}>
-            <table className="table table-sm ">
-              <thead className="thead-dark">
+            <Table dark hover className="shadow-lg">
+              <thead >
                 <tr>
                   <th>Suite Name</th>
                   <th>Release</th>
                   <th>Build Number</th>
                   <th>Status</th>
-                  <th>Total Test-case</th>
+                 
                   <th>Total Test-case Executed</th>
                   <th>Total Pass</th>
                   <th>Total Fail</th>
@@ -57,7 +58,7 @@ export default class ResultTable extends Component {
               <tbody>
                 {this.tabRow()}
               </tbody>
-            </table>
+            </Table>
         </div>
       );
     }

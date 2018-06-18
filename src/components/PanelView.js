@@ -31,7 +31,7 @@ class PanelView extends Component {
     // let message =this.props.testcase.ValidationPointResults.forEach(element => {
     //  {element} 
     //  });
-    let failureReason = (this.props.testcase.failureReason) ?<div>Reason: {this.props.testcase.failureReason} </div>:<div/>;
+    let failureReason = (this.props.testcase.FailureReason) ?(/\d/.test(this.props.testcase.FailureReason) ? <div>Reason: <a href={"https://jira.logrhythm.com/browse/"+this.props.testcase.FailureReason}>{this.props.testcase.FailureReason}</a> </div>:<div>Reason: {this.props.testcase.FailureReason} </div> ) :<div/>;
     let validations = (this.props.testcase.ValidationPointResults) ? this.props.testcase.ValidationPointResults.join("\n") : (this.props.testcase.validationPointResults)? this.props.testcase.validationPointResults.join("\n") :'';
     let testcasename = (this.props.testcase.TestCaseName) ?this.props.testcase.TestCaseName :  (this.props.testcase.testCaseName) ?this.props.testcase.testCaseName :'';
     return (

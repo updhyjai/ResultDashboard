@@ -8,9 +8,8 @@ import UnverifiedResultTable from '../components/ResultTable';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { validateWidthHeight } from 'Recharts/lib/util/ReactUtils';
-import Table from '../components/Table';
 
-export default class Aqua extends Component {
+export default class Smoke extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -35,9 +34,9 @@ export default class Aqua extends Component {
 
 
     getTrendChartDataFromDB(val){
-        axios.get('http://10.4.1.89:4200/result/ci/release/'+val+'/aqua/')
+        axios.get('http://10.4.1.89:4200/result/ci/release/'+val+'/smoke/')
         .then(response=>{
-            console.log("Response data for trend chart from masterDB below from aqua with release"+val);
+            console.log("Response data for trend chart from masterDB below from smoke with release"+val);
             console.log(response.data);
             let count = response.data.length;
             if(count>0)
@@ -84,9 +83,9 @@ export default class Aqua extends Component {
     }
 
     getReleaseSummary = (val)=>{
-        axios.get('http://10.4.1.89:4200/result/release/'+ val + '/aqua')
+        axios.get('http://10.4.1.89:4200/result/release/'+ val + '/smoke')
         .then(response => {
-        console.log("Response data for summary table from masterDB below from aqua with release "+ val);
+        console.log("Response data for summary table from masterDB below from smoke with release "+ val);
         console.log(response.data);
         var datas = new Array(response.data.length);
         //var chartData = new Array(response.length);
@@ -138,7 +137,7 @@ export default class Aqua extends Component {
     }
 
     getUnverifiedSummary = (val)=>{
-        axios.get('http://10.4.1.89:4200/result/tempresults/ci/release/'+ val + '/aqua')
+        axios.get('http://10.4.1.89:4200/result/tempresults/ci/release/'+ val + '/smoke')
         .then(response => {
             console.log("Response data from tempdb ci below with version: " + val);
             console.log(response.data);
@@ -188,12 +187,11 @@ export default class Aqua extends Component {
         const unverifiedResultTable = (this.state.releaseSummaryUnverified.length > 0 ) ?(<div style={{marginTop: 50}}><div style={{marginTop: 20}}> <UnverifiedResultTable releaseSummary = {this.state.releaseSummaryUnverified}/></div></div>):(<div><h1>No new results now!</h1></div>);
         const summaryTable = (this.state.releaseSummary.length > 0 ) ?(<div style={{marginTop: 50}}><div style={{marginTop: 20}}> <SummaryTable releaseSummary = {this.state.releaseSummary}/></div></div>):(<div></div>);
         const pieChart =(this.state.totalPass !== 0)? <TrendChart/>:<div></div>;
-        const verifiedResultTable = (this.state.releaseSummary.length > 0)?(<div style={{marginTop: 50}}><div style={{marginTop: 20}}> <Table TableData = {this.state.releaseSummary}/></div></div>):(<div></div>);
         
         return (
             <div>
              <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom" style={{margin:20}}>
-            <h2 className="h2" >Aqua CI Trend Chart</h2>
+            <h2 className="h2" >Smoke CI Trend Chart</h2>
             <div className="form-control-lg mb-4 mb-md-0">
             <h3>Release</h3>
               <Dropdown onReleaseChange = {this.onReleaseChange} />
@@ -211,7 +209,7 @@ export default class Aqua extends Component {
                 
                  
                  <div style={{marginTop: 50}} className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 className="h2" >Aqua Execution Result Summary</h1>
+            <h1 className="h2" >Smoke Execution Result Summary</h1>
            
           </div>
           <div>
@@ -232,14 +230,6 @@ export default class Aqua extends Component {
               Unverified Results
             </NavLink>
           </NavItem>
-          <NavItem className="summaryTab">
-            <NavLink
-              className={classnames({ active: this.state.activeTab === '3' })}
-              onClick={() => { this.toggle('3'); }}
-            >
-              Under Development
-            </NavLink>
-          </NavItem>
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
@@ -253,13 +243,6 @@ export default class Aqua extends Component {
             <Row>
               <Col sm="12">
               {unverifiedResultTable}
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tabId="3">
-            <Row>
-              <Col sm="12">
-              {verifiedResultTable}
               </Col>
             </Row>
           </TabPane>
